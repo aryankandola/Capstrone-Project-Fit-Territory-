@@ -1,10 +1,10 @@
 
-import { useEffect, useState } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
-import { getProfile } from '../../api/profile'
+import { useState } from 'react'
+import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 import {
   Activity, Award, Dumbbell, Footprints, Gift,
-  LayoutDashboard, Map, Menu, Settings, Sparkles, Trophy, Wallet, X,
+  LayoutDashboard, LogOut, Map, Menu, Settings, Sparkles, Trophy, Wallet, X,
 } from 'lucide-react'
 
 const navigation = [
@@ -22,29 +22,11 @@ const navigation = [
 
 export default function AppLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [profileName, setProfileName] = useState('')
 
-  useEffect(() => {
-    const loadProfile = () => {
-      getProfile()
-        .then((data) => setProfileName(data.name || ''))
-        .catch((error) => {
-          console.error('Could not load profile name:', error)
-        })
-    }
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
 
-    loadProfile()
-
-    const handleProfileUpdated = (event) => {
-      setProfileName(event.detail?.name || '')
-    }
-
-    window.addEventListener('profileUpdated', handleProfileUpdated)
-
-    return () => {
-      window.removeEventListener('profileUpdated', handleProfileUpdated)
-    }
-  }, [])
+  const profileName = user?.name || 'Athlete'
 
   const initials = profileName
     .trim()
@@ -58,6 +40,11 @@ export default function AppLayout() {
   const firstName = profileName.trim().split(/\s+/)[0] || ''
 
   const closeMenu = () => setMenuOpen(false)
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login', { replace: true })
+  }
 
   return (
     <div className="app-shell">
@@ -152,10 +139,12 @@ export default function AppLayout() {
 
           <div className="topbar-actions">
             <span className="demo-pill"><span /> DEMO MODE</span>
+
             <NavLink to="/wallet" className="coin-pill">
               <span className="coin-symbol">F</span> 1,240
               <span className="coin-plus">+</span>
             </NavLink>
+
             <NavLink
               to="/profile"
               className="top-avatar avatar avatar-lime"
@@ -163,6 +152,16 @@ export default function AppLayout() {
             >
               {initials}
             </NavLink>
+
+            <button
+              type="button"
+              className="logout-button"
+              onClick={handleLogout}
+              title="Logout"
+            >
+              <LogOut size={18} />
+              <span>Logout</span>
+            </button>
           </div>
         </header>
 
