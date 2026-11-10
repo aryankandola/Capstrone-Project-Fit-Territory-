@@ -46,8 +46,8 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173",
-                "https://frontend-8rq1-q1aniibto-aryan-kandolas-projects.vercel.app"
+        "http://localhost:5173",
+        "https://frontend-8rq1-2ozd2qlqg-aryan-kandolas-projects.vercel.app"
         ));
 
         configuration.setAllowedMethods(
