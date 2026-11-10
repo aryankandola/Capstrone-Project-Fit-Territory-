@@ -1,13 +1,14 @@
-```javascript
+
 import apiClient from '../services/apiClient'
 
-export async function getActivities() {
+const getActivities = async () => {
   const response = await apiClient.get('/activities')
   return response.data
 }
 
-export async function createActivity(activity) {
+const createActivity = async (activity) => {
   const response = await apiClient.post('/activities', activity)
   return response.data
 }
-```
+
+export { getActivities, createActivity }
